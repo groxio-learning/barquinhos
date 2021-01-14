@@ -1,5 +1,5 @@
 defmodule Barquinhos.Game.Ship do
-  alias Barquinhos.Game.Board
+  alias Barquinhos.Game.Ship
 
   defstruct [coordinates: {0,0}, orientation: :vertical, size: 3]
 
@@ -11,4 +11,9 @@ defmodule Barquinhos.Game.Ship do
     }
   end
 
+  def to_points(%Ship{} = ship) do
+  end
+
+  def hit?(%Ship{} = ship, shot) do
+  end
 end
