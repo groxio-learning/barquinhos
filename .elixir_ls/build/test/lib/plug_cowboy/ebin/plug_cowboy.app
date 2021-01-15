@@ -1,6 +1,6 @@
 {application,plug_cowboy,
-             [{applications,[kernel,stdlib,elixir,logger,telemetry,cowboy,
-                             cowboy_telemetry,plug]},
+             [{applications,[kernel,stdlib,elixir,logger,plug,cowboy,
+                             cowboy_telemetry,telemetry]},
               {description,"A Plug adapter for Cowboy"},
               {modules,['Elixir.Plug.Cowboy','Elixir.Plug.Cowboy.Conn',
                         'Elixir.Plug.Cowboy.Drainer',

@@ -1,6 +1,6 @@
 {application,phoenix_live_dashboard,
-             [{applications,[kernel,stdlib,elixir,logger,telemetry_metrics,
-                             phoenix_html,phoenix_live_view]},
+             [{applications,[kernel,stdlib,elixir,logger,phoenix_live_view,
+                             telemetry_metrics,phoenix_html]},
               {description,"Real-time performance dashboard for Phoenix"},
               {modules,['Elixir.Inspect.Phoenix.LiveDashboard.PageLive',
                         'Elixir.Phoenix.LiveDashboard',

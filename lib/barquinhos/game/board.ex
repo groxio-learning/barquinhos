@@ -10,18 +10,22 @@ defmodule Barquinhos.Game.Board do
 
   #reducer
   def add_ship(%Board{} = board, ship) do
-    board
+    # Add ship to board's ship
+    %{board | ships: board.ships++[ship]}
   end
 
   #reducer
   def attack(%Board{} = board, shot) do
-    board
+    %{board | shots: board.shots++[shot]}
   end
 
   # converter
-  def game_over?(%Board{} = board) do
+  def hit?(%Board{} = board, shot) do
+    # call hit on ship
+    Enum.any?(board.ships, fn ship -> Ship.hit?(ship, shot) end)
   end
 
-  def hit?(%Board{} = board, shot) do
+  def game_over?(%Board{} = board) do
+    false
   end
 end

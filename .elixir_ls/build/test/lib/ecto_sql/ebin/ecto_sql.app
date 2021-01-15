@@ -1,6 +1,6 @@
 {application,ecto_sql,
-             [{applications,[kernel,stdlib,elixir,logger,eex,telemetry,
-                             db_connection,ecto]},
+             [{applications,[kernel,stdlib,elixir,logger,eex,ecto,telemetry,
+                             db_connection]},
               {description,"SQL-based adapters for Ecto and database migrations"},
               {modules,['Elixir.Collectable.Ecto.Adapters.SQL.Stream',
                         'Elixir.Ecto.Adapter.Migration',
