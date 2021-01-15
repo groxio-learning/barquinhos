@@ -1,20 +1,20 @@
 defmodule Barquinhos.Game.Board do
   alias Barquinhos.Game.{Board, Ship}
 
-  defstruct [ships: [], shots: []]
+  defstruct ships: [], shots: []
 
-  #constructor
+  # constructor
   def new do
     %__MODULE__{}
   end
 
-  #reducer
+  # reducer
   def add_ship(%Board{} = board, ship) do
     # Add ship to board's ship
     %{board | ships: board.ships++[ship]}
   end
 
-  #reducer
+  # reducer
   def attack(%Board{} = board, shot) do
     %{board | shots: board.shots++[shot]}
   end
