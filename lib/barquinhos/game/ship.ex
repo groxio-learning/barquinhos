@@ -11,7 +11,12 @@ defmodule Barquinhos.Game.Ship do
     }
   end
 
-  def to_points(%Ship{} = ship) do
+  def to_points(%Ship{orientation: :vertical, coordinates: {x, y}} = ship) do
+    for n <- y..(y-1 + ship.size), do: {x, n}
+  end
+
+  def to_points(%Ship{orientation: :horizontal, coordinates: {x, y}} = ship) do
+    for n <- x..(x-1 + ship.size), do: {n, y}
   end
 
   def hit?(%Ship{} = ship, shot) do
