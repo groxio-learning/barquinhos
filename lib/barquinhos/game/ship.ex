@@ -24,7 +24,9 @@ defmodule Barquinhos.Game.Ship do
   end
 
   def sunk?(%Ship{} = ship, all_shots) do
-    MapSet.size(MapSet.intersection(MapSet.new(to_points(ship)), MapSet.new(all_shots))) ==
-      ship.size
+    ship
+    |> to_points()
+    |> Kernel.--(all_shots)
+    |> Enum.empty?()
   end
 end
