@@ -34,5 +34,5 @@ npm-debug.log
 /priv/static/
 
 .nvimlog
-.elixir_ls
+.elixir_ls/
 config/dev.exs
