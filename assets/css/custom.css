@@ -1,0 +1,80 @@
+body {
+    background-color: #263263;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center > button {
+    margin-top: 1%;
+}
+
+.footer {
+    background-color: transparent;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.footer > svg {
+    margin: -10px;
+}
+
+.welcome {
+    color: #A4A7B9;
+    text-align: center;
+    padding-top: 10%;
+    padding-bottom: 5%;
+}
+
+.welcome > h1 {
+    color: #39B6E8;
+    font-size: 5rem;
+}
+
+.instructions {
+    color: #39B6E8;
+    text-align: center;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+button.play {
+    background-color: #39B6E8;
+}
+
+button.play:hover {
+    background-color: #72D0F2;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); 
+    grid-template-rows: repeat(10, 1fr); 
+    grid-column-gap: 0px;
+    grid-row-gap: 0px; 
+}
+
+.slot {
+    background-color: #008060;
+    text-align: center;
+    padding: 25%;
+    border: solid 1px #00B3B3;
+    color: azure;
+}
+  
+.slot:hover {
+    background-color: cornflowerblue;
+    cursor: pointer;
+}
+
+.ship {
+    background-color: paleturquoise;
+    color: rebeccapurple;
+    border: none;
+}

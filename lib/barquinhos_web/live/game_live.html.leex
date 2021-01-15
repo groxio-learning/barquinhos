@@ -1,0 +1,16 @@
+<section class="instructions">
+    <h2>Place your ships</h2>
+    <%= inspect(@ships) %>
+</section>
+<section class="board">
+    <%= for x <- 0..9, y <- 0..9 do %>
+    <div phx-click="slot" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
+         class="slot <%= if "#{x}#{y}" in @ships, do: "ship" %>"
+         id="<%= "#{x}#{y}" %>">
+        <%= x %>, <%= y %>
+    </div>
+    <% end%>
+</section>
+<div class="center">
+    <button>I'm ready!</button>
+</div>
