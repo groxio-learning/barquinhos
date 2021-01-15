@@ -11,20 +11,10 @@
   </head>
   <body>
     <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-            <% end %>
-          </ul>
-        </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
-      </section>
     </header>
     <%= @inner_content %>
+    <section class="footer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#0099ff" fill-opacity="0.05" d="M0,192L17.1,202.7C34.3,213,69,235,103,224C137.1,213,171,171,206,133.3C240,96,274,64,309,69.3C342.9,75,377,117,411,128C445.7,139,480,117,514,122.7C548.6,128,583,160,617,160C651.4,160,686,128,720,138.7C754.3,149,789,203,823,213.3C857.1,224,891,192,926,170.7C960,149,994,139,1029,128C1062.9,117,1097,107,1131,117.3C1165.7,128,1200,160,1234,154.7C1268.6,149,1303,107,1337,85.3C1371.4,64,1406,64,1423,64L1440,64L1440,320L1422.9,320C1405.7,320,1371,320,1337,320C1302.9,320,1269,320,1234,320C1200,320,1166,320,1131,320C1097.1,320,1063,320,1029,320C994.3,320,960,320,926,320C891.4,320,857,320,823,320C788.6,320,754,320,720,320C685.7,320,651,320,617,320C582.9,320,549,320,514,320C480,320,446,320,411,320C377.1,320,343,320,309,320C274.3,320,240,320,206,320C171.4,320,137,320,103,320C68.6,320,34,320,17,320L0,320Z" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #007acc;"></path></svg>
+    </section>
   </body>
 </html>
