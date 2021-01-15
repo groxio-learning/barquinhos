@@ -33,4 +33,11 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/
 
+# ignore elixirLS folder
+/.elixir_ls/
+
+# ignores nvim files
 .nvimlog
+
+# ignores asdf files
+.tool-versions
