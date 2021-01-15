@@ -36,3 +36,4 @@ npm-debug.log
 .nvimlog
 .elixir_ls/
 config/dev.exs
+package-lock.json
