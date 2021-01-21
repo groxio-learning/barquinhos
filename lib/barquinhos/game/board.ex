@@ -11,12 +11,12 @@ defmodule Barquinhos.Game.Board do
   # reducer
   def add_ship(%Board{} = board, ship) do
     # Add ship to board's ship
-    %{board | ships: board.ships++[ship]}
+    %{board | ships: [ship|board.ships]}
   end
 
   # reducer
   def attack(%Board{} = board, shot) do
-    %{board | shots: board.shots++[shot]}
+    %{board | shots: [shot|board.shots]}
   end
 
   # converter
