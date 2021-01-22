@@ -2,18 +2,13 @@
     <h2>Place your ships</h2>
     <pre>
         <%= inspect(@ships) %>
-        <%= inspect(@board) %>
+        <%= inspect(@points) %>
     </pre>
-</section>
-<section class="ships">
-    <button>3</button>
-    <button>4</button>
-    <button>5</button>
 </section>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
-    <div phx-click="slot" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot <%= if "#{x}#{y}" in @ships, do: "ship" %>"
+    <div phx-click="add_ship" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
+         class="slot <%= if "#{x}#{y}" in @points, do: "ship" %>"
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>
