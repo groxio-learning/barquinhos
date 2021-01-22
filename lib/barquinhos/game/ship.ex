@@ -3,11 +3,11 @@ defmodule Barquinhos.Game.Ship do
 
   @ship_types [:submarine, :destroyer, :battleship, :carrier, :cruiser]
 
-  defstruct coordinates: {0, 0}, orientation: :vertical, size: 3, type: :submarine
+  defstruct starting_point: {0, 0}, orientation: :vertical, size: 3, type: :submarine
 
   def new(point, orientation, type) when type in @ship_types do
     %__MODULE__{
-      coordinates: point,
+      starting_point: point,
       orientation: orientation,
       size: get_size(type),
       type: type
@@ -20,11 +20,11 @@ defmodule Barquinhos.Game.Ship do
   defp get_size(:battleship), do: 4
   defp get_size(:carrier), do: 5
 
-  def to_points(%Ship{orientation: :vertical, coordinates: {x, y}} = ship) do
+  def to_points(%Ship{orientation: :vertical, starting_point: {x, y}} = ship) do
     for n <- y..(y - 1 + ship.size), do: {x, n}
   end
 
-  def to_points(%Ship{orientation: :horizontal, coordinates: {x, y}} = ship) do
+  def to_points(%Ship{orientation: :horizontal, starting_point: {x, y}} = ship) do
     for n <- x..(x - 1 + ship.size), do: {n, y}
   end
 
