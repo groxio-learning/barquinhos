@@ -1,5 +1,6 @@
 defmodule BarquinhosWeb.GameLive do
   use BarquinhosWeb, :live_view
+  alias Barquinhos.Game.Board
 
   def mount(_params, _session, socket) do
     {:ok, socket |> build}
@@ -8,10 +9,15 @@ defmodule BarquinhosWeb.GameLive do
   def build(socket) do
     socket
     |> ships()
+    |> board()
   end
 
   defp ships(socket) do
     assign(socket, ships: [])
+  end
+
+  defp board(socket) do
+    assign(socket, board: Board.new)
   end
 
   defp ships(%{assigns: %{ships: ships}} = socket, ship) do
