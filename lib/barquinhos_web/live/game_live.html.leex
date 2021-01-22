@@ -1,6 +1,14 @@
 <section class="instructions">
     <h2>Place your ships</h2>
-    <%= inspect(@ships) %>
+    <pre>
+        <%= inspect(@ships) %>
+        <%= inspect(@board) %>
+    </pre>
+</section>
+<section class="ships">
+    <button>3</button>
+    <button>4</button>
+    <button>5</button>
 </section>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
