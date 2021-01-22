@@ -22,5 +22,4 @@ defmodule BarquinhosWeb.GameLive do
     IO.inspect({x, y})
     {:noreply, socket |> ships(x <> y)}
   end
-
 end
