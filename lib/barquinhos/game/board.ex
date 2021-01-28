@@ -1,5 +1,5 @@
 defmodule Barquinhos.Game.Board do
-  alias Barquinhos.Game.{Board, Ship}
+  alias Barquinhos.Game.Ship
 
   defstruct ships: [], shots: []
 
@@ -9,23 +9,23 @@ defmodule Barquinhos.Game.Board do
   end
 
   # reducer
-  def add_ship(%Board{} = board, ship) do
+  def add_ship(%__MODULE__{} = board, ship) do
     # Add ship to board's ship
     %{board | ships: [ship | board.ships]}
   end
 
   # reducer
-  def attack(%Board{} = board, shot) do
+  def attack(%__MODULE__{} = board, shot) do
     %{board | shots: [shot | board.shots]}
   end
 
   # converter
-  def hit?(%Board{} = board, shot) do
+  def hit?(%__MODULE__{} = board, shot) do
     # call hit on ship
     Enum.any?(board.ships, fn ship -> Ship.hit?(ship, shot) end)
   end
 
-  def game_over?(%Board{} = board) do
-    false
+  def game_over?(%__MODULE__{} = board) do
+    Enum.all?(board.ships, fn ship -> Ship.sunk?(ship, board.shots) end)
   end
 end
