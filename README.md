@@ -2,6 +2,12 @@
 
 Multiplayer destructive bingo for grownups
 
+## Setup
+
+On `config` folder it has two files called `dummy_dev.exs` and `dummy_test.exs`.
+So you should copy and paste and remove the `dummy_` prefix for each file and make
+your changes based on your environment configuration.
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
