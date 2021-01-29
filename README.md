@@ -4,8 +4,8 @@ Multiplayer destructive bingo for grownups
 
 ## Setup
 
-On `config` folder it has two files called `dummy_dev.exs` and `dummy_test.exs`.
-So you should copy and paste and remove the `dummy_` prefix for each file and make
+On `config` folder it has two files called `dummy_dev.exs.bkp` and `dummy_test.exs.bkp`.
+So you should copy and paste and remove the `dummy_` prefix and `.bkp` sufix for each file and make
 your changes based on your environment configuration.
 
 To start your Phoenix server:
