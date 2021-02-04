@@ -1,7 +1,8 @@
 defmodule Barquinhos.Game.Board do
   alias Barquinhos.Game.Ship
 
-  defstruct ships: [], shots: []
+  # ship-hit, miss, ship-sunk, gameover, ready
+  defstruct ships: [], shots: [], status: :ready
 
   # constructor
   def new do
@@ -25,7 +26,21 @@ defmodule Barquinhos.Game.Board do
     Enum.any?(board.ships, fn ship -> Ship.hit?(ship, shot) end)
   end
 
+  def sunk?(%__MODULE__{} = board) do
+    Enum.any?(board.ships, fn ship -> Ship.sunk?(ship, board.shots) end)
+  end
+
   def game_over?(%__MODULE__{} = board) do
     Enum.all?(board.ships, fn ship -> Ship.sunk?(ship, board.shots) end)
   end
+
+  def status(board, shot) do
+    cond do
+      game_over?(board) -> %{board | status: :gameover}
+      sunk?(board) -> %{board | status: :sunk}
+      not hit?(board, shot) -> %{board | status: :miss}
+      true -> %{board | status: :hit}
+    end
+  end
+  
 end
