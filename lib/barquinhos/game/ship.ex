@@ -12,7 +12,7 @@ defmodule Barquinhos.Game.Ship do
       size: get_size(type),
       type: type
     }
-  end 
+  end
 
   defp get_size(:submarine), do: 3
   defp get_size(:destroyer), do: 2
