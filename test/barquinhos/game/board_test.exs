@@ -12,7 +12,7 @@ defmodule Barquinhos.Game.BoardTest do
   describe "add_ship" do
     test "adds ship to the board", %{new_board: new_board} do
       actual = new_board
-      expected = %Board{ships: [%Ship{coordinates: {1, 1}, orientation: :horizontal, size: 2}]}
+      expected = %Board{ships: [%Ship{starting_point: {1, 1}, orientation: :horizontal, size: 2, type: :submarine}]}
       assert actual == expected
     end
   end
