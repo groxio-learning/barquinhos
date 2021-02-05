@@ -20,11 +20,11 @@ defmodule Barquinhos.Game.Ship do
   defp get_size(:battleship), do: 4
   defp get_size(:carrier), do: 5
 
-  def to_points(%Ship{orientation: :vertical, starting_point: {x, y}} = ship) do
+  def to_points(%Ship{orientation: :horizontal, starting_point: {x, y}} = ship) do
     for n <- y..(y - 1 + ship.size), do: {x, n}
   end
 
-  def to_points(%Ship{orientation: :horizontal, starting_point: {x, y}} = ship) do
+  def to_points(%Ship{orientation: :vertical, starting_point: {x, y}} = ship) do
     for n <- x..(x - 1 + ship.size), do: {n, y}
   end
 
