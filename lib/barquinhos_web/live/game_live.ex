@@ -72,4 +72,9 @@ defmodule BarquinhosWeb.GameLive do
   def handle_event("ship_orientation", %{"orientation" => ship}, socket) do
     {:noreply, socket |> ship_orientation(String.to_atom(ship))}
   end
+
+  defp already_on_board?(ships, type) do
+    ships
+    |> Enum.any?(fn ship -> ship.type == type end)
+  end
 end
