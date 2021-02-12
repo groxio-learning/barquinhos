@@ -61,8 +61,12 @@ defmodule BarquinhosWeb.GameLive do
     assign(socket, points: my_ships)
   end
 
+  def handle_event("add_ship", _points, %{assigns: %{ship_type: type, ship_orientation: orientation}} = socket) when is_nil(type) or is_nil(orientation) do
+    {:noreply, socket}
+  end
+
   def handle_event("add_ship", %{"x" => x, "y" => y}, socket) do
-    {:noreply, socket |> ships({String.to_integer(x), String.to_integer(y)}) |> to_points()}
+    {:noreply, socket |> ships({String.to_integer(x), String.to_integer(y)}) |> to_points() |> ship_type(nil)}
   end
 
   def handle_event("ship_type", %{"type" => ship}, socket) do
