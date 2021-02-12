@@ -31,4 +31,23 @@ defmodule Barquinhos.Game.BoardTest do
     test "check if the game is over" do
     end
   end
+
+  describe "board journey" do
+    test "play hard game" do
+      destroyer = Ship.new({1, 1}, :horizontal, :destroyer)
+      submarine = Ship.new({5, 5}, :horizontal, :submarine)
+
+      actual =
+        Board.new()
+        |> assert_status_key(:status, :ready)
+        |> Board.add_ship(destroyer)
+        |> Board.add_ship(submarine)
+        |> Board.attack({1, 1})
+    end
+  end
+
+  defp assert_status_key(actual, key, value) do
+    assert Map.get(actual, key) == value
+    actual
+  end
 end
