@@ -3,18 +3,22 @@
     <pre>
         <%= inspect(@ships) %>
         <%= inspect(@points) %>
+        <%= inspect(@game_status) %>
     </pre>
 </section>
+<%= if @game_status == :placing do %>
 <div>
     <p><button class="<%= if @ship_orientation == :horizontal, do: "selected"%>" phx-click="ship_orientation" phx-value-orientation="horizontal">horizontal</button></p>
     <p><button class="<%= if @ship_orientation == :vertical, do: "selected"%>" phx-click="ship_orientation" phx-value-orientation="vertical">vertical</button></p>
 </div>
 <div>
-    <p><button class="<%= if @ship_type == :submarine, do: "selected"%>" phx-click="ship_type" phx-value-type="submarine">submarine</button></p>
-    <p><button class="<%= if @ship_type == :destroyer, do: "selected"%>" phx-click="ship_type" phx-value-type="destroyer">destroyer</button></p>
-    <p><button class="<%= if @ship_type == :battleship, do: "selected"%>" phx-click="ship_type" phx-value-type="battleship">battleship</button></p>
-    <p><button class="<%= if @ship_type == :carrier, do: "selected"%>" phx-click="ship_type" phx-value-type="carrier">carrier</button></p>
+    <p><button <%= if already_on_board?(@ships, :submarine), do: "disabled" %> class="<%= if @ship_type == :submarine, do: "selected"%>" phx-click="ship_type" phx-value-type="submarine">submarine</button></p>
+    <p><button <%= if already_on_board?(@ships, :destroyer), do: "disabled" %> class="<%= if @ship_type == :destroyer, do: "selected"%>" phx-click="ship_type" phx-value-type="destroyer">destroyer</button></p>
+    <p><button <%= if already_on_board?(@ships, :battleship), do: "disabled" %> class="<%= if @ship_type == :battleship, do: "selected"%>" phx-click="ship_type" phx-value-type="battleship">battleship</button></p>
+    <p><button <%= if already_on_board?(@ships, :carrier), do: "disabled" %> class="<%= if @ship_type == :carrier, do: "selected"%>" phx-click="ship_type" phx-value-type="carrier">carrier</button></p>
+    <p><button <%= if already_on_board?(@ships, :cruiser), do: "disabled" %> class="<%= if @ship_type == :cruiser, do: "selected"%>" phx-click="ship_type" phx-value-type="carrier">cruiser</button></p>
 </div>
+<% end %>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
     <div phx-click="add_ship" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
@@ -24,6 +28,3 @@
     </div>
     <% end%>
 </section>
-<div class="center">
-    <button>I'm ready!</button>
-</div>
