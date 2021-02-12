@@ -16,6 +16,7 @@
     <p><button <%= if already_on_board?(@ships, :destroyer), do: "disabled" %> class="<%= if @ship_type == :destroyer, do: "selected"%>" phx-click="ship_type" phx-value-type="destroyer">destroyer</button></p>
     <p><button <%= if already_on_board?(@ships, :battleship), do: "disabled" %> class="<%= if @ship_type == :battleship, do: "selected"%>" phx-click="ship_type" phx-value-type="battleship">battleship</button></p>
     <p><button <%= if already_on_board?(@ships, :carrier), do: "disabled" %> class="<%= if @ship_type == :carrier, do: "selected"%>" phx-click="ship_type" phx-value-type="carrier">carrier</button></p>
+    <p><button <%= if already_on_board?(@ships, :cruiser), do: "disabled" %> class="<%= if @ship_type == :cruiser, do: "selected"%>" phx-click="ship_type" phx-value-type="carrier">cruiser</button></p>
 </div>
 <% end %>
 <section class="board">
