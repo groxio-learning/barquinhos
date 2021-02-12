@@ -13,6 +13,7 @@ defmodule BarquinhosWeb.GameLive do
     |> points()
     |> ship_type(nil)
     |> ship_orientation(nil)
+    |> game_status(:placing)
   end
 
   defp ships(socket) do
@@ -61,12 +62,22 @@ defmodule BarquinhosWeb.GameLive do
     assign(socket, points: my_ships)
   end
 
+  defp game_status(socket, status), do: assign(socket, game_status: status)
+
+  defp game_status(%{assigns: %{ships: ships}} = socket) when length(ships) == 4 do
+    assign(socket, game_status: :ready)
+  end
+
+  defp game_status(socket), do: socket
+
+
+
   def handle_event("add_ship", _points, %{assigns: %{ship_type: type, ship_orientation: orientation}} = socket) when is_nil(type) or is_nil(orientation) do
     {:noreply, socket}
   end
 
   def handle_event("add_ship", %{"x" => x, "y" => y}, socket) do
-    {:noreply, socket |> ships({String.to_integer(x), String.to_integer(y)}) |> to_points() |> ship_type(nil)}
+    {:noreply, socket |> ships({String.to_integer(x), String.to_integer(y)}) |> to_points() |> ship_type(nil) |> game_status()}
   end
 
   def handle_event("ship_type", %{"type" => ship}, socket) do
