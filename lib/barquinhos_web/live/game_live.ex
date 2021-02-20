@@ -70,7 +70,7 @@ defmodule BarquinhosWeb.GameLive do
   defp game_status(socket, status), do: assign(socket, game_status: status)
 
   defp game_status(%{assigns: %{ships: ships}} = socket) when length(ships) == 5 do
-    assign(socket, game_status: :ready, shots: [{2,7}])
+    assign(socket, game_status: :ready, shots: [{2, 7}])
   end
 
   defp game_status(socket), do: socket
