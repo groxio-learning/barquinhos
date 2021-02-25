@@ -11,6 +11,7 @@ defmodule BarquinhosWeb.GameLive do
     |> ships()
     |> board()
     |> points()
+    |> shots()
     |> ship_type(nil)
     |> ship_orientation(nil)
     |> game_status(:placing)
@@ -26,6 +27,10 @@ defmodule BarquinhosWeb.GameLive do
 
   defp board(socket) do
     assign(socket, board: Board.new())
+  end
+
+  defp shots(socket) do
+    assign(socket, shots: [])
   end
 
   defp ship_type(socket, ship_type) when is_atom(ship_type) do
@@ -65,7 +70,7 @@ defmodule BarquinhosWeb.GameLive do
   defp game_status(socket, status), do: assign(socket, game_status: status)
 
   defp game_status(%{assigns: %{ships: ships}} = socket) when length(ships) == 5 do
-    assign(socket, game_status: :ready)
+    assign(socket, game_status: :ready, shots: [{2, 7}])
   end
 
   defp game_status(socket), do: socket

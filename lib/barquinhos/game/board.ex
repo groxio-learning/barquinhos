@@ -26,16 +26,20 @@ defmodule Barquinhos.Game.Board do
     Enum.any?(board.ships, fn ship -> Ship.hit?(ship, shot) end)
   end
 
-  defp maybe_ship_type(nil, _sunk), do: nil # TODO: I think this function its not use
+  # TODO: I think this function its not use
+  defp maybe_ship_type(nil, _sunk), do: nil
   defp maybe_ship_type(_ship, false), do: nil
   defp maybe_ship_type(ship, true), do: ship.type
 
-  defp sunk_ship(%__MODULE__{shots: [last_shot|_rest]} = board) do
-    hit_ship = board.ships
-    |> Enum.find(fn ship -> Ship.hit?(ship, last_shot) end) #ship or nil
+  defp sunk_ship(%__MODULE__{shots: [last_shot | _rest]} = board) do
+    hit_ship =
+      board.ships
+      # ship or nil
+      |> Enum.find(fn ship -> Ship.hit?(ship, last_shot) end)
 
     maybe_ship_type(hit_ship, Ship.sunk?(hit_ship, last_shot))
   end
+
   defp sunk_ship(_), do: nil
 
   defp game_over?(%__MODULE__{} = board) do
