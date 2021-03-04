@@ -5,7 +5,7 @@ defmodule Barquinhos.Game.BoardTest do
 
   setup do
     ship = Ship.new({1, 1}, :horizontal, :submarine)
-    new_board = Board.new() |> Board.add_ship(ship)
+    new_board = Board.new(size: {}) |> Board.add_ship(ship)
     %{new_board: new_board}
   end
 
@@ -14,6 +14,7 @@ defmodule Barquinhos.Game.BoardTest do
       actual = new_board
 
       expected = %Board{
+        size: {9, 9},
         ships: [
           %Ship{starting_point: {1, 1}, orientation: :horizontal, size: 3, type: :submarine}
         ]
@@ -44,11 +45,10 @@ defmodule Barquinhos.Game.BoardTest do
       submarine = Ship.new({5, 5}, :horizontal, :submarine)
 
       actual =
-        Board.new()
-        |> assert_status_key(:status, :ready)
+        Board.new(size: {})
         |> Board.add_ship(destroyer)
         |> Board.add_ship(submarine)
-        |> Board.attack({1, 1})
+        |> Board.add_shot({1, 1})
     end
   end
 
