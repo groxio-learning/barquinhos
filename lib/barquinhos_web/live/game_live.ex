@@ -109,4 +109,13 @@ defmodule BarquinhosWeb.GameLive do
     ships
     |> Enum.any?(fn ship -> ship.type == type end)
   end
+
+  defp ship_class(points, {x, y}) do
+    if "#{x}#{y}" in points, do: "ship"
+  end
+
+  defp shot_class(shots, {x, y}) do
+    if {x, y} in shots, do: "shot"
+  end
+
 end
