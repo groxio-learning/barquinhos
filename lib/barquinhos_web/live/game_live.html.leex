@@ -25,10 +25,23 @@
     <% end %>
 </div>
 <% end %>
+<h1> Opponents Board </h1>
+<section class="board">
+    <%= for x <- 0..9, y <- 0..9 do %>
+    <div phx-click="add_shot" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
+         class="slot <%= if {x, y} in @shots, do: "shot" %>"
+         id="<%= "#{x}#{y}" %>">
+        <%= x %>, <%= y %>
+    </div>
+    <% end%>
+</section>
+<br>
+<h1> Your Board </h1>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
     <div phx-click="add_ship" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot <%= ship_class(@points, {x, y}) %> <%= shot_class(@shots, {x, y}) %>"
+         class="slot <%= if "#{x}#{y}" in @points, do: "ship" %>"
+
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>

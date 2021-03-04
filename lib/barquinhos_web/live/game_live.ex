@@ -93,6 +93,10 @@ defmodule BarquinhosWeb.GameLive do
      |> game_status()}
   end
 
+  def handle_event("add_shot", %{"x" => x, "y" => y}, socket) do
+    {:noreply, assign(socket,shots: [{String.to_integer(x), String.to_integer(y)}|socket.assigns.shots])}
+  end
+
   def handle_event("ship_type", %{"type" => ship}, socket) do
     {:noreply, socket |> ship_type(String.to_atom(ship))}
   end
