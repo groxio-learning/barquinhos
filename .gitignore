@@ -45,6 +45,3 @@ npm-debug.log
 # ignore local dev settings
 config/dev.exs
 config/test.exs
-
-# ignore version lock
-package-lock.json

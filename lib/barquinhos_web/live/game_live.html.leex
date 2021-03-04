@@ -3,27 +3,47 @@
     <pre>
         <%= inspect(@ships) %>
         <%= inspect(@points) %>
+        shots: <%= inspect(@shots) %>
+        <%= inspect(@game_status) %>
     </pre>
 </section>
+<%= if @game_status == :placing do %>
 <div>
-    <p><button phx-click="ship_orientation" phx-value-orientation="horizontal">horizontal</button></p>
-    <p><button phx-click="ship_orientation" phx-value-orientation="vertical">vertical</button></p>
+    <button class="<%= if @ship_orientation == :horizontal, do: "selected"%>" phx-click="ship_orientation" phx-value-orientation="horizontal">horizontal</button>
+    <button class="<%= if @ship_orientation == :vertical, do: "selected"%>" phx-click="ship_orientation" phx-value-orientation="vertical">vertical</button>
 </div>
 <div>
-    <p><button phx-click="ship_type" phx-value-type="submarine">submarine</button></p>
-    <p><button phx-click="ship_type" phx-value-type="destroyer">destroyer</button></p>
-    <p><button phx-click="ship_type" phx-value-type="battleship">battleship</button></p>
-    <p><button phx-click="ship_type" phx-value-type="carrier">carrier</button></p>
+
+    <%= for ship_type <- [:submarine, :cruiser, :destroyer, :carrier, :battleship] do %>
+        <%= if not already_on_board?(@ships, ship_type) do %>
+            <button
+                <%= if already_on_board?(@ships, ship_type), do: "disabled" %>
+                class="<%= if @ship_type == ship_type, do: "selected"%>"
+                phx-click="ship_type" phx-value-type="<%= ship_type%>"> <%= ship_type %>
+            </button>
+        <% end %>
+    <% end %>
 </div>
+<% end %>
+<h1> Opponents Board </h1>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
-    <div phx-click="add_ship" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot <%= if "#{x}#{y}" in @points, do: "ship" %>"
+    <div phx-click="add_shot" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
+         class="slot <%= if {x, y} in @shots, do: "shot" %>"
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>
     <% end%>
 </section>
-<div class="center">
-    <button>I'm ready!</button>
-</div>
+<br>
+<h1> Your Board </h1>
+<section class="board">
+    <%= for x <- 0..9, y <- 0..9 do %>
+    <div phx-click="add_ship" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
+         class="slot <%= if "#{x}#{y}" in @points, do: "ship" %>"
+
+         id="<%= "#{x}#{y}" %>">
+        <%= x %>, <%= y %>
+    </div>
+    <% end%>
+</section>

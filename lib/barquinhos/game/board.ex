@@ -26,21 +26,32 @@ defmodule Barquinhos.Game.Board do
     Enum.any?(board.ships, fn ship -> Ship.hit?(ship, shot) end)
   end
 
-  def sunk?(%__MODULE__{} = board) do
-    Enum.any?(board.ships, fn ship -> Ship.sunk?(ship, board.shots) end)
+  # TODO: I think this function its not use
+  defp maybe_ship_type(nil, _sunk), do: nil
+  defp maybe_ship_type(_ship, false), do: nil
+  defp maybe_ship_type(ship, true), do: ship.type
+
+  defp sunk_ship(%__MODULE__{shots: [last_shot | _rest]} = board) do
+    hit_ship =
+      board.ships
+      # ship or nil
+      |> Enum.find(fn ship -> Ship.hit?(ship, last_shot) end)
+
+    maybe_ship_type(hit_ship, Ship.sunk?(hit_ship, last_shot))
   end
 
-  def game_over?(%__MODULE__{} = board) do
+  defp sunk_ship(_), do: nil
+
+  defp game_over?(%__MODULE__{} = board) do
     Enum.all?(board.ships, fn ship -> Ship.sunk?(ship, board.shots) end)
   end
 
   def status(board, shot) do
     cond do
       game_over?(board) -> %{board | status: :gameover}
-      sunk?(board) -> %{board | status: :sunk}
       not hit?(board, shot) -> %{board | status: :miss}
-      true -> %{board | status: :hit}
+      is_nil(sunk_ship(board)) -> %{board | status: :hit}
+      true -> %{board | status: sunk_ship(board)}
     end
   end
-  
 end

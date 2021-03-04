@@ -87,3 +87,10 @@ button.play:hover {
     color: rebeccapurple;
     border: none;
 }
+
+
+.shot {
+    background-color:red;
+    color: rgb(7, 0, 0);
+    border: none;
+}
