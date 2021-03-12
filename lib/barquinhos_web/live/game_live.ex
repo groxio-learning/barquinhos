@@ -3,6 +3,7 @@ defmodule BarquinhosWeb.GameLive do
   alias Barquinhos.Game.{Board, Ship}
 
   def mount(_params, _session, socket) do
+    BarquinhosWeb.Endpoint.subscribe("battleship")
     {:ok, socket |> build}
   end
 
@@ -94,6 +95,7 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   def handle_event("add_shot", %{"x" => x, "y" => y}, socket) do
+    BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{"x" => x, "y" => y})
     {:noreply, assign(socket,shots: [{String.to_integer(x), String.to_integer(y)}|socket.assigns.shots])}
   end
 
@@ -103,6 +105,10 @@ defmodule BarquinhosWeb.GameLive do
 
   def handle_event("ship_orientation", %{"orientation" => ship}, socket) do
     {:noreply, socket |> ship_orientation(String.to_atom(ship))}
+  end
+
+  def handle_info(%Phoenix.Socket.Broadcast{event: "shot_fired", payload: %{"x" => x, "y" => y}, topic: "battleship"}, socket) do
+    {:noreply, socket}
   end
 
   defp already_on_board?(ships, type) do
