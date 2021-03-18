@@ -1,6 +1,6 @@
 defmodule BarquinhosWeb.GameLive do
   use BarquinhosWeb, :live_view
-  alias Barquinhos.Game.{Board, Ship}
+  alias Barquinhos.Game.{Board, Ship, Player}
 
   def mount(_params, _session, socket) do
     BarquinhosWeb.Endpoint.subscribe("battleship")
@@ -9,13 +9,19 @@ defmodule BarquinhosWeb.GameLive do
 
   def build(socket) do
     socket
+    |> player()
     |> ships()
     |> board()
     |> points()
     |> shots()
+    |> shots_received()
     |> ship_type(nil)
     |> ship_orientation(nil)
     |> game_status(:placing)
+  end
+
+  defp player(socket) do
+    assign(socket, player: Player.new("Mickey"))
   end
 
   defp ships(socket) do
@@ -32,6 +38,10 @@ defmodule BarquinhosWeb.GameLive do
 
   defp shots(socket) do
     assign(socket, shots: [])
+  end
+
+  defp shots_received(socket) do
+    assign(socket, shots_received: [])
   end
 
   defp ship_type(socket, ship_type) when is_atom(ship_type) do
@@ -95,7 +105,7 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   def handle_event("add_shot", %{"x" => x, "y" => y}, socket) do
-    BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{"x" => x, "y" => y})
+    BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{ "player" => socket.assigns.player, "x" => x, "y" => y})
     {:noreply, assign(socket,shots: [{String.to_integer(x), String.to_integer(y)}|socket.assigns.shots])}
   end
 
@@ -107,8 +117,13 @@ defmodule BarquinhosWeb.GameLive do
     {:noreply, socket |> ship_orientation(String.to_atom(ship))}
   end
 
-  def handle_info(%Phoenix.Socket.Broadcast{event: "shot_fired", payload: %{"x" => x, "y" => y}, topic: "battleship"}, socket) do
-    {:noreply, socket}
+  def handle_info(%Phoenix.Socket.Broadcast{event: "shot_fired", payload: %{"player" => player, "x" => x, "y" => y}, topic: "battleship"}, socket) do
+    IO.puts("shots fired!")
+    if player.id != socket.assigns.player.id do
+      {:noreply, assign(socket,shots_received: [{String.to_integer(x), String.to_integer(y)}|socket.assigns.shots_received])}
+    else
+      {:noreply, socket}
+    end
   end
 
   defp already_on_board?(ships, type) do
