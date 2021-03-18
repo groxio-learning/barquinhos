@@ -2,8 +2,10 @@
     <h2>Place your ships</h2>
     <pre>
         <%= inspect(@ships) %>
+        <%= inspect(@player) %>
         <%= inspect(@points) %>
         shots: <%= inspect(@shots) %>
+        shots_received: <%= inspect(@shots_received) %>
         <%= inspect(@game_status) %>
     </pre>
 </section>
@@ -40,8 +42,7 @@
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
     <div phx-click="add_ship" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot <%= if "#{x}#{y}" in @points, do: "ship" %>"
-
+         class="slot <%= if "#{x}#{y}" in @points, do: "ship" %> <%= if {x, y} in @shots_received, do: "shot" %>"
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>
