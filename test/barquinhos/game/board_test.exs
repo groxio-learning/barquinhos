@@ -4,8 +4,8 @@ defmodule Barquinhos.Game.BoardTest do
   alias Barquinhos.Game.{Board, Ship}
 
   setup do
-    ship = Ship.new({1, 1}, :horizontal, :submarine)
-    new_board = Board.new() |> Board.add_ship(ship)
+    ship = Ship.new([{1, 1}], :horizontal, false, :submarine)
+    new_board = Board.new(size: {}) |> Board.add_ship(ship)
     %{new_board: new_board}
   end
 
@@ -14,8 +14,9 @@ defmodule Barquinhos.Game.BoardTest do
       actual = new_board
 
       expected = %Board{
+        size: {9, 9},
         ships: [
-          %Ship{starting_point: {1, 1}, orientation: :horizontal, size: 3, type: :submarine}
+          %Ship{starting_point: [{1, 1}], orientation: :horizontal, size: 3, type: :submarine}
         ]
       }
 
@@ -28,32 +29,16 @@ defmodule Barquinhos.Game.BoardTest do
     end
   end
 
-  describe "hit?" do
-    test "finds if a ship has been hit" do
-    end
-  end
-
-  describe "game_over?" do
-    test "check if the game is over" do
-    end
-  end
-
   describe "board journey" do
     test "play hard game" do
-      destroyer = Ship.new({1, 1}, :horizontal, :destroyer)
-      submarine = Ship.new({5, 5}, :horizontal, :submarine)
+      destroyer = Ship.new({1, 1}, :horizontal, false, :destroyer)
+      submarine = Ship.new({5, 5}, :horizontal, false, :submarine)
 
       actual =
-        Board.new()
-        |> assert_status_key(:status, :ready)
+        Board.new(size: {})
         |> Board.add_ship(destroyer)
         |> Board.add_ship(submarine)
-        |> Board.attack({1, 1})
+        |> Board.add_shot({1, 1})
     end
-  end
-
-  defp assert_status_key(actual, key, value) do
-    assert Map.get(actual, key) == value
-    actual
   end
 end

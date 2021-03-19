@@ -138,5 +138,4 @@ defmodule BarquinhosWeb.GameLive do
   defp shot_class(shots, {x, y}) do
     if {x, y} in shots, do: "shot"
   end
-
 end

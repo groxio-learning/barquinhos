@@ -3,13 +3,18 @@ defmodule Barquinhos.Game.Ship do
 
   @ship_types [:submarine, :destroyer, :battleship, :carrier, :cruiser]
 
-  defstruct starting_point: {0, 0}, orientation: :vertical, size: 3, type: :submarine
+  defstruct starting_point: [{1, 1}],
+            orientation: :vertical,
+            size: 3,
+            sunk: false,
+            type: :submarine
 
-  def new(point, orientation, type) when type in @ship_types do
+  def new(point, orientation, sunk, type) when type in @ship_types do
     %__MODULE__{
       starting_point: point,
       orientation: orientation,
       size: get_size(type),
+      sunk: sunk,
       type: type
     }
   end
@@ -21,21 +26,10 @@ defmodule Barquinhos.Game.Ship do
   defp get_size(:carrier), do: 5
 
   def to_points(%Ship{orientation: :horizontal, starting_point: {x, y}} = ship) do
-    for n <- y..(y - 1 + ship.size), do: {x, n}
+    for n <- y..(y - 1 + get_size(ship.type)), do: {x, n}
   end
 
   def to_points(%Ship{orientation: :vertical, starting_point: {x, y}} = ship) do
-    for n <- x..(x - 1 + ship.size), do: {n, y}
-  end
-
-  def hit?(%Ship{} = ship, shot) do
-    shot in to_points(ship)
-  end
-
-  def sunk?(%Ship{} = ship, all_shots) do
-    ship
-    |> to_points()
-    |> Kernel.--(all_shots)
-    |> Enum.empty?()
+    for n <- x..(x - 1 + get_size(ship.type)), do: {n, y}
   end
 end
