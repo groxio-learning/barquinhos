@@ -10,6 +10,7 @@ defmodule BarquinhosWeb.GameLive do
   def build(socket) do
     socket
     |> player()
+    |> players()
     |> ships()
     |> board()
     |> points()
@@ -22,6 +23,15 @@ defmodule BarquinhosWeb.GameLive do
 
   defp player(socket) do
     assign(socket, player: Player.new("Mickey"))
+  end
+
+  defp players(socket) do
+    if connected?(socket) do
+      BarquinhosWeb.Endpoint.broadcast("battleship", "new_player", %{"player" => socket.assigns.player})
+      assign(socket, players: [socket.assigns.player])
+    else
+      assign(socket, players: [])
+    end
   end
 
   defp ships(socket) do
@@ -126,6 +136,21 @@ defmodule BarquinhosWeb.GameLive do
     end
   end
 
+  def handle_info(%Phoenix.Socket.Broadcast{event: "new_player", payload: %{"player" => player}, topic: "battleship"}, socket) do
+    IO.puts("new player!")
+    if player.id != socket.assigns.player.id and player.id not in socket.assigns.players  do
+      updated_players = [player | socket.assigns.players]
+      BarquinhosWeb.Endpoint.broadcast("battleship", "update_players", %{"players" => updated_players})
+      {:noreply, assign(socket, players: updated_players)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(%Phoenix.Socket.Broadcast{event: "update_players", payload: %{"players" => players}, topic: "battleship"}, socket) do
+    {:noreply, assign(socket, players: players)}
+  end
+
   defp already_on_board?(ships, type) do
     ships
     |> Enum.any?(fn ship -> ship.type == type end)
@@ -138,5 +163,6 @@ defmodule BarquinhosWeb.GameLive do
   defp shot_class(shots, {x, y}) do
     if {x, y} in shots, do: "shot"
   end
+
 
 end

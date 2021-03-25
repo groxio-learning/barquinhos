@@ -7,6 +7,7 @@
         shots: <%= inspect(@shots) %>
         shots_received: <%= inspect(@shots_received) %>
         <%= inspect(@game_status) %>
+        players: <%= inspect(length(@players)) %>
     </pre>
 </section>
 <%= if @game_status == :placing do %>
