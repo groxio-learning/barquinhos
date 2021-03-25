@@ -13,5 +13,5 @@ defmodule Barquinhos.Game.Player do
     %{player | shots: [shot | player.shots]}
   end
 
-  defp generate_id(), do: Enum.random(1000..9999)
+  defp generate_id(), do: Ecto.UUID.generate()
 end
