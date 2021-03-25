@@ -135,8 +135,12 @@ defmodule BarquinhosWeb.GameLive do
     if "#{x}#{y}" in points, do: "ship"
   end
 
-  defp shot_class(shots, {x, y}) do
-    if {x, y} in shots, do: "shot"
+  defp shot_class(shots_received, points, {x, y}) do
+    cond do
+      {x, y} in shots_received && "#{x}#{y}" in points -> "hit"
+      {x, y} in shots_received -> "shot"
+      true -> ""
+    end
   end
 
 end
