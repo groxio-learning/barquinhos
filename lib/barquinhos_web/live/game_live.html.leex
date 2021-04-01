@@ -3,7 +3,9 @@
     <pre>
         <%= inspect(@ships) %>
         <%= inspect(@player) %>
-        player ids: <%= inspect(@players) %>
+        <%= for %{id: id, ready: status} <- @players do %>
+           Player: <%= inspect(id) %> | Ready? <%= inspect(status) %>
+        <% end %>
         points: <%= inspect(@points) %>
         shots: <%= inspect(@shots) %>
         shots_received: <%= inspect(@shots_received) %>

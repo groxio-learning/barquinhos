@@ -4,11 +4,13 @@ defmodule BarquinhosWeb.GameLive do
   alias Barquinhos.Presence
 
   def mount(_params, _session, socket) do
-    player = Player.new("Mickey")
+    player = Player.new()
+
     if connected?(socket) do
       BarquinhosWeb.Endpoint.subscribe("battleship")
-      Presence.track(self(), "battleship", player.id, %{id: player.id})
+      Presence.track(self(), "battleship", player.id, %{id: player.id, ready: player.ready})
     end
+
     {:ok, socket |> build(player)}
   end
 
@@ -27,7 +29,7 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   defp players(socket) do
-    assign(socket, players: Presence.list("battleship") |> Map.keys)
+    assign(socket, players: Presence.list("battleship") |> Map.keys())
   end
 
   defp player(socket, player) do
@@ -90,8 +92,10 @@ defmodule BarquinhosWeb.GameLive do
 
   defp game_status(socket, status), do: assign(socket, game_status: status)
 
-  defp game_status(%{assigns: %{ships: ships}} = socket) when length(ships) == 5 do
-    assign(socket, game_status: :ready, shots: [{2, 7}])
+  defp game_status(%{assigns: %{player: player, ships: ships}} = socket)
+       when length(ships) == 5 do
+    Presence.update(self(), "battleship", player.id, %{player | ready: true})
+    assign(socket, game_status: :ready)
   end
 
   defp game_status(socket), do: socket
@@ -115,8 +119,14 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   def handle_event("add_shot", %{"x" => x, "y" => y}, socket) do
-    BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{ "player" => socket.assigns.player, "x" => x, "y" => y})
-    {:noreply, assign(socket,shots: [{String.to_integer(x), String.to_integer(y)}|socket.assigns.shots])}
+    BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{
+      "player" => socket.assigns.player,
+      "x" => x,
+      "y" => y
+    })
+
+    {:noreply,
+     assign(socket, shots: [{String.to_integer(x), String.to_integer(y)} | socket.assigns.shots])}
   end
 
   def handle_event("ship_type", %{"type" => ship}, socket) do
@@ -127,18 +137,31 @@ defmodule BarquinhosWeb.GameLive do
     {:noreply, socket |> ship_orientation(String.to_atom(ship))}
   end
 
-  def handle_info(%Phoenix.Socket.Broadcast{event: "shot_fired", payload: %{"player" => player, "x" => x, "y" => y}, topic: "battleship"}, socket) do
+  def handle_info(
+        %Phoenix.Socket.Broadcast{
+          event: "shot_fired",
+          payload: %{"player" => player, "x" => x, "y" => y},
+          topic: "battleship"
+        },
+        socket
+      ) do
     IO.puts("shots fired!")
+
     if player.id != socket.assigns.player.id do
-      {:noreply, assign(socket,shots_received: [{String.to_integer(x), String.to_integer(y)}|socket.assigns.shots_received])}
+      {:noreply,
+       assign(socket,
+         shots_received: [
+           {String.to_integer(x), String.to_integer(y)} | socket.assigns.shots_received
+         ]
+       )}
     else
       {:noreply, socket}
     end
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
-    IO.puts "presence diff event!"
-    players = Presence.list("battleship") |> Map.keys
+    IO.puts("presence diff event!")
+    players = for {_id, %{metas: [player]}} <- Presence.list("battleship"), do: Player.new(player)
     {:noreply, assign(socket, players: players)}
   end
 
@@ -158,5 +181,4 @@ defmodule BarquinhosWeb.GameLive do
       true -> ""
     end
   end
-
 end
