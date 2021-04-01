@@ -1,15 +1,21 @@
 defmodule BarquinhosWeb.GameLive do
   use BarquinhosWeb, :live_view
   alias Barquinhos.Game.{Board, Ship, Player}
+  alias Barquinhos.Presence
 
   def mount(_params, _session, socket) do
-    BarquinhosWeb.Endpoint.subscribe("battleship")
-    {:ok, socket |> build}
+    player = Player.new("Mickey")
+    if connected?(socket) do
+      BarquinhosWeb.Endpoint.subscribe("battleship")
+      Presence.track(self(), "battleship", player.id, %{id: player.id})
+    end
+    {:ok, socket |> build(player)}
   end
 
-  def build(socket) do
+  def build(socket, player) do
     socket
-    |> player()
+    |> players()
+    |> player(player)
     |> ships()
     |> board()
     |> points()
@@ -20,8 +26,12 @@ defmodule BarquinhosWeb.GameLive do
     |> game_status(:placing)
   end
 
-  defp player(socket) do
-    assign(socket, player: Player.new("Mickey"))
+  defp players(socket) do
+    assign(socket, players: Presence.list("battleship") |> Map.keys)
+  end
+
+  defp player(socket, player) do
+    assign(socket, player: player)
   end
 
   defp ships(socket) do
@@ -124,6 +134,12 @@ defmodule BarquinhosWeb.GameLive do
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
+    IO.puts "presence diff event!"
+    players = Presence.list("battleship") |> Map.keys
+    {:noreply, assign(socket, players: players)}
   end
 
   defp already_on_board?(ships, type) do
