@@ -3,7 +3,10 @@
     <pre>
         <%= inspect(@ships) %>
         <%= inspect(@player) %>
-        <%= inspect(@points) %>
+        <%= for %{id: id, ready: status} <- @players do %>
+           Player: <%= inspect(id) %> | Ready? <%= inspect(status) %>
+        <% end %>
+        points: <%= inspect(@points) %>
         shots: <%= inspect(@shots) %>
         shots_received: <%= inspect(@shots_received) %>
         <%= inspect(@game_status) %>
@@ -31,7 +34,7 @@
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
     <div phx-click="add_shot" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot <%= if {x, y} in @shots, do: "shot" %>"
+         class="slot "
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>
@@ -42,7 +45,7 @@
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
     <div phx-click="add_ship" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot <%= if "#{x}#{y}" in @points, do: "ship" %> <%= if {x, y} in @shots_received, do: "shot" %>"
+         class="slot <%= ship_class(@points, {x,y}) %> <%= shot_class(@shots_received, @points, {x,y}) %>"
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>

@@ -1,11 +1,17 @@
 defmodule Barquinhos.Game.Player do
   alias Barquinhos.Game.Board
-  defstruct [:id, :nickname, winner: false, board: %Board{}, shots: []]
+  defstruct [:id, :nickname, ready: false, winner: false, board: %Board{}, shots: []]
 
-  def new(nickname) do
+  def new do
     %__MODULE__{
-      id: generate_id(),
-      nickname: nickname
+      id: generate_id()
+    }
+  end
+
+  def new(%{id: id, ready: ready} = _attrs) do
+    %__MODULE__{
+      id: id,
+      ready: ready
     }
   end
 
