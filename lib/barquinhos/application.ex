@@ -13,6 +13,7 @@ defmodule Barquinhos.Application do
       BarquinhosWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Barquinhos.PubSub},
+      Barquinhos.Presence,
       # Start the Endpoint (http/https)
       BarquinhosWeb.Endpoint
       # Start a worker by calling: Barquinhos.Worker.start_link(arg)
