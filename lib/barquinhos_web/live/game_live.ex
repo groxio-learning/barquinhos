@@ -29,7 +29,7 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   defp players(socket) do
-    assign(socket, players: Presence.list("battleship") |> Map.keys())
+    assign(socket, players: [])
   end
 
   defp player(socket, player) do
@@ -99,6 +99,12 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   defp game_status(socket), do: socket
+
+  def all_players_ready?([]), do: false
+
+  def all_players_ready?(players) do
+    Enum.all?(players, fn player -> player.ready end)
+  end
 
   def handle_event(
         "add_ship",
