@@ -100,8 +100,7 @@ defmodule BarquinhosWeb.GameLive do
 
   defp game_status(socket), do: socket
 
-  def all_players_ready?([]), do: false
-
+  #for all of the players, take each player and check to see if it's ready
   def all_players_ready?(players) do
     Enum.all?(players, fn player -> player.ready end)
   end
@@ -125,14 +124,18 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   def handle_event("add_shot", %{"x" => x, "y" => y}, socket) do
-    BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{
-      "player" => socket.assigns.player,
-      "x" => x,
-      "y" => y
-    })
+    if all_players_ready?(socket.assigns.players) do
+      BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{
+        "player" => socket.assigns.player,
+        "x" => x,
+        "y" => y
+      })
 
-    {:noreply,
-     assign(socket, shots: [{String.to_integer(x), String.to_integer(y)} | socket.assigns.shots])}
+      {:noreply,
+       assign(socket, shots: [{String.to_integer(x), String.to_integer(y)} | socket.assigns.shots])}
+     else
+       {:noreply, socket}
+     end
   end
 
   def handle_event("ship_type", %{"type" => ship}, socket) do
