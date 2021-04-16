@@ -11,6 +11,7 @@
         points: <%= inspect(@points) %>
         shots: <%= inspect(@shots) %>
         shots_received: <%= inspect(@shots_received) %>
+        opponent_hits: <%= inspect(@opponent_hits) %>
         <%= inspect(@game_status) %>
     </pre>
 </section>
@@ -36,7 +37,7 @@
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
     <div phx-click="add_shot" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot "
+         class="slot <%= opponent_shot_class(@opponent_hits, @shots, {x,y}) %>"
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>

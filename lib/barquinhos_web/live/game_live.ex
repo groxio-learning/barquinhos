@@ -26,6 +26,7 @@ defmodule BarquinhosWeb.GameLive do
     |> ship_type(nil)
     |> ship_orientation(nil)
     |> game_status(:placing)
+    |> opponent_hits()
   end
 
   defp players(socket) do
@@ -48,12 +49,40 @@ defmodule BarquinhosWeb.GameLive do
     assign(socket, board: Board.new())
   end
 
+  # shots to the opponent
   defp shots(socket) do
     assign(socket, shots: [])
   end
 
+  # shots hit on the opponent
+  defp opponent_hits(socket) do
+    assign(socket, opponent_hits: [])
+  end
+
   defp shots_received(socket) do
     assign(socket, shots_received: [])
+  end
+
+  defp ship_hit(socket, {x, y}) do
+    if "#{x}#{y}" in socket.assigns.points do
+      # hit
+      IO.puts("sending out ship_hit")
+
+      BarquinhosWeb.Endpoint.broadcast("battleship", "ship_hit", %{
+        "player" => socket.assigns.player,
+        "x" => x,
+        "y" => y
+      })
+    else
+      # miss
+      IO.puts("sending out ship_miss")
+
+      BarquinhosWeb.Endpoint.broadcast("battleship", "ship_miss", %{
+        "player" => socket.assigns.player,
+        "x" => x,
+        "y" => y
+      })
+    end
   end
 
   defp ship_type(socket, ship_type) when is_atom(ship_type) do
@@ -125,14 +154,18 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   def handle_event("add_shot", %{"x" => x, "y" => y}, socket) do
-    BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{
-      "player" => socket.assigns.player,
-      "x" => x,
-      "y" => y
-    })
+    if all_players_ready?(socket.assigns.players) do
+      BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{
+        "player" => socket.assigns.player,
+        "x" => x,
+        "y" => y
+      })
 
-    {:noreply,
-     assign(socket, shots: [{String.to_integer(x), String.to_integer(y)} | socket.assigns.shots])}
+      {:noreply,
+       assign(socket, shots: [{String.to_integer(x), String.to_integer(y)} | socket.assigns.shots])}
+    else
+      {:noreply, socket}
+    end
   end
 
   def handle_event("ship_type", %{"type" => ship}, socket) do
@@ -153,7 +186,11 @@ defmodule BarquinhosWeb.GameLive do
       ) do
     IO.puts("shots fired!")
 
+    # This shot was not fired by me
     if player.id != socket.assigns.player.id do
+      # check if I was hit
+      ship_hit(socket, {x, y})
+
       {:noreply,
        assign(socket,
          shots_received: [
@@ -163,6 +200,40 @@ defmodule BarquinhosWeb.GameLive do
     else
       {:noreply, socket}
     end
+  end
+
+  def handle_info(
+        %Phoenix.Socket.Broadcast{
+          event: "ship_hit",
+          payload: %{"player" => player, "x" => x, "y" => y},
+          topic: "battleship"
+        },
+        socket
+      ) do
+    # if this is not my ship_hit message
+    if player.id != socket.assigns.player.id do
+      IO.puts("ship_hit received in broadcast")
+
+      {:noreply,
+       assign(socket,
+         opponent_hits: [
+           {String.to_integer(x), String.to_integer(y)} | socket.assigns.opponent_hits
+         ]
+       )}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(
+        %Phoenix.Socket.Broadcast{
+          event: "ship_miss",
+          payload: %{"player" => player, "x" => x, "y" => y},
+          topic: "battleship"
+        },
+        socket
+      ) do
+    {:noreply, socket}
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
@@ -184,6 +255,15 @@ defmodule BarquinhosWeb.GameLive do
     cond do
       {x, y} in shots_received && "#{x}#{y}" in points -> "hit"
       {x, y} in shots_received -> "shot"
+      true -> ""
+    end
+  end
+
+  defp opponent_shot_class(opponent_hits, shots, {x, y}) do
+    cond do
+      {x, y} in opponent_hits -> "hit"
+      # opponent shots fired from us
+      {x, y} in shots -> "shot"
       true -> ""
     end
   end
