@@ -26,11 +26,6 @@ defmodule BarquinhosWeb.GameLive do
     |> ship_type(nil)
     |> ship_orientation(nil)
     |> game_status(:placing)
-    |> every_player_ready()
-  end
-
-  def every_player_ready(socket) do
-    assign(socket, every_player_ready: false)
   end
 
   defp players(socket) do
@@ -104,8 +99,6 @@ defmodule BarquinhosWeb.GameLive do
   end
 
   defp game_status(socket), do: socket
-
-  def all_players_ready?([]), do: false
 
   #for all of the players, take each player and check to see if it's ready
   def all_players_ready?(players) do
