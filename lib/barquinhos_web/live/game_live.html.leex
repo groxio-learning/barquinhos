@@ -33,6 +33,7 @@
     <% end %>
 </div>
 <% end %>
+<%= if all_players_ready?(@players) do %>
 <h1> Opponents Board </h1>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
@@ -44,6 +45,7 @@
     <% end%>
 </section>
 <br>
+<% end %>
 <h1> Your Board </h1>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
