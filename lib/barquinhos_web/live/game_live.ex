@@ -26,7 +26,14 @@ defmodule BarquinhosWeb.GameLive do
     |> ship_type(nil)
     |> ship_orientation(nil)
     |> game_status(:placing)
+    |> sunk()
     |> opponent_hits()
+  end
+
+  defp sunk(socket) do
+    sunk = all_ships_sunk?(socket.assigns.shots_received, socket.assigns.points)
+
+    assign(socket, sunk: sunk)
   end
 
   defp players(socket) do
@@ -176,6 +183,15 @@ defmodule BarquinhosWeb.GameLive do
     {:noreply, socket |> ship_orientation(String.to_atom(ship))}
   end
 
+  def all_ships_sunk?([], []) do
+    false
+  end
+
+  def all_ships_sunk?(shots_received, points) do
+    shots_received = Enum.map(shots_received, fn {x, y} -> "#{x}#{y}" end)
+    MapSet.subset?(MapSet.new(points), MapSet.new(shots_received))
+  end
+
   def handle_info(
         %Phoenix.Socket.Broadcast{
           event: "shot_fired",
@@ -196,7 +212,8 @@ defmodule BarquinhosWeb.GameLive do
          shots_received: [
            {String.to_integer(x), String.to_integer(y)} | socket.assigns.shots_received
          ]
-       )}
+       )
+       |> sunk()}
     else
       {:noreply, socket}
     end
@@ -239,6 +256,7 @@ defmodule BarquinhosWeb.GameLive do
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
     IO.puts("presence diff event!")
     players = for {_id, %{metas: [player]}} <- Presence.list("battleship"), do: Player.new(player)
+    IO.inspect(players)
     {:noreply, assign(socket, players: players)}
   end
 

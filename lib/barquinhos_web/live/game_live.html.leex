@@ -10,6 +10,7 @@
 
         points: <%= inspect(@points) %>
         shots: <%= inspect(@shots) %>
+        sunk: <%= inspect(@sunk) %>
         shots_received: <%= inspect(@shots_received) %>
         opponent_hits: <%= inspect(@opponent_hits) %>
         <%= inspect(@game_status) %>
@@ -33,7 +34,10 @@
     <% end %>
 </div>
 <% end %>
-<%= if all_players_ready?(@players) do %>
+<%= if @sunk do %>
+<h1> You loose! :(  </h1>
+<% end %>
+<%= if all_players_ready?(@players) && !@sunk do %>
 <h1> Opponents Board </h1>
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
