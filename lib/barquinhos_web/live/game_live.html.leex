@@ -37,6 +37,11 @@
 <%= if @sunk do %>
 <h1> You loose! :(  </h1>
 <% end %>
+
+<%= if @player.winner do %>
+<h1> You won! :)  </h1>
+<% end %>
+
 <%= if all_players_ready?(@players) && !@sunk do %>
 <h1> Opponents Board </h1>
 <section class="board">
