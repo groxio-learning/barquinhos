@@ -1,6 +1,6 @@
 defmodule Barquinhos.Game.Player do
   alias Barquinhos.Game.Board
-  defstruct [:id, :nickname, ready: false, winner: false, board: %Board{}, shots: []]
+  defstruct [:id, :nickname, ready: false, winner: false, lose: false, board: %Board{}, shots: []]
 
   def new do
     %__MODULE__{
@@ -8,10 +8,11 @@ defmodule Barquinhos.Game.Player do
     }
   end
 
-  def new(%{id: id, ready: ready} = _attrs) do
+  def new(%{id: id, ready: ready, lose: lose} = _attrs) do
     %__MODULE__{
       id: id,
-      ready: ready
+      ready: ready,
+      lose: lose
     }
   end
 

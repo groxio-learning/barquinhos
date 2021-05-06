@@ -8,7 +8,12 @@ defmodule BarquinhosWeb.GameLive do
 
     if connected?(socket) do
       BarquinhosWeb.Endpoint.subscribe("battleship")
-      Presence.track(self(), "battleship", player.id, %{id: player.id, ready: player.ready})
+
+      Presence.track(self(), "battleship", player.id, %{
+        id: player.id,
+        lose: false,
+        ready: player.ready
+      })
     end
 
     {:ok, socket |> build(player)}
@@ -32,6 +37,12 @@ defmodule BarquinhosWeb.GameLive do
 
   defp sunk(socket) do
     sunk = all_ships_sunk?(socket.assigns.shots_received, socket.assigns.points)
+
+    if sunk do
+      IO.puts("broadcast player loose!")
+      player = socket.assigns.player
+      Presence.update(self(), "battleship", player.id, %{player | lose: true})
+    end
 
     assign(socket, sunk: sunk)
   end
@@ -255,9 +266,25 @@ defmodule BarquinhosWeb.GameLive do
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
     IO.puts("presence diff event!")
+
     players = for {_id, %{metas: [player]}} <- Presence.list("battleship"), do: Player.new(player)
     IO.inspect(players)
-    {:noreply, assign(socket, players: players)}
+
+    players_without_lose = Enum.filter(players, fn player -> not player.lose end)
+    IO.inspect(players_without_lose)
+
+    current_player = socket.assigns.player
+
+    current_player =
+      if length(players_without_lose) == 1 and
+           List.first(players_without_lose).id == current_player.id and length(players) > 1 do
+        IO.puts("inside the if block")
+        %{current_player | winner: true}
+      else
+        current_player
+      end
+
+    {:noreply, assign(socket, players: players, player: current_player)}
   end
 
   defp already_on_board?(ships, type) do
