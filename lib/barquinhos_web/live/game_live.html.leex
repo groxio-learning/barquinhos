@@ -1,7 +1,7 @@
 <section class="instructions">
     <h2>Place your ships</h2>
     <pre>
-        <%= inspect(@ships) %>
+        <%= inspect(@board.ships) %>
         <%= inspect(@player) %>
        <%= inspect(all_players_ready?(@players)) %>
         <%= for %{id: id, ready: status} <- @players do %>
@@ -9,10 +9,10 @@
         <% end %>
 
         points: <%= inspect(@points) %>
-        shots: <%= inspect(@shots) %>
+        shots: <%= inspect(@board.shots) %>
         sunk: <%= inspect(@sunk) %>
         shots_received: <%= inspect(@shots_received) %>
-        opponent_hits: <%= inspect(@opponent_hits) %>
+        opponent_hits: <%= inspect(@board.opponent_hits) %>
         <%= inspect(@game_status) %>
     </pre>
 </section>
@@ -24,9 +24,9 @@
 <div>
 
     <%= for ship_type <- [:submarine, :cruiser, :destroyer, :carrier, :battleship] do %>
-        <%= if not already_on_board?(@ships, ship_type) do %>
+        <%= if not already_on_board?(@board.ships, ship_type) do %>
             <button
-                <%= if already_on_board?(@ships, ship_type), do: "disabled" %>
+                <%= if already_on_board?(@board.ships, ship_type), do: "disabled" %>
                 class="<%= if @ship_type == ship_type, do: "selected"%>"
                 phx-click="ship_type" phx-value-type="<%= ship_type%>"> <%= ship_type %>
             </button>
@@ -47,7 +47,7 @@
 <section class="board">
     <%= for x <- 0..9, y <- 0..9 do %>
     <div phx-click="add_shot" phx-value-x="<%= x %>" phx-value-y="<%= y %>"
-         class="slot <%= opponent_shot_class(@opponent_hits, @shots, {x,y}) %>"
+         class="slot <%= opponent_shot_class(@board.opponent_hits, @board.shots, {x,y}) %>"
          id="<%= "#{x}#{y}" %>">
         <%= x %>, <%= y %>
     </div>
