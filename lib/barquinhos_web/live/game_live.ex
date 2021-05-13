@@ -26,13 +26,11 @@ defmodule BarquinhosWeb.GameLive do
     |> ships()
     |> board()
     |> points()
-    |> shots()
     |> shots_received()
     |> ship_type(nil)
     |> ship_orientation(nil)
     |> game_status(:placing)
     |> sunk()
-    |> opponent_hits()
   end
 
   defp sunk(socket) do
@@ -65,16 +63,6 @@ defmodule BarquinhosWeb.GameLive do
 
   defp board(socket) do
     assign(socket, board: Board.new())
-  end
-
-  # shots to the opponent
-  defp shots(socket) do
-    assign(socket, shots: [])
-  end
-
-  # shots hit on the opponent
-  defp opponent_hits(socket) do
-    assign(socket, opponent_hits: [])
   end
 
   defp shots_received(socket) do
@@ -119,15 +107,11 @@ defmodule BarquinhosWeb.GameLive do
     assign(socket, ship_orientation: nil)
   end
 
-  defp ships(%{assigns: %{ships: ships}} = socket, ship) do
-    assign(socket, ships: [new_ship(socket, ship) | ships])
+  def add_ship(socket, x, y) do
+    assign(socket, board: Board.add_ship(socket.assigns.board, x, y, socket.assigns.ship_orientation, socket.assigns.ship_type))
   end
 
-  defp new_ship(%{assigns: %{ship_type: ship_type, ship_orientation: ship_orientation}}, points) do
-    Ship.new(points, ship_orientation, ship_type)
-  end
-
-  defp to_points(%{assigns: %{ships: ships}} = socket) do
+  defp to_points(%{assigns: %{board: %{ships: ships}}} = socket) do
     my_ships =
       ships
       |> Enum.map(&Ship.to_points/1)
@@ -139,7 +123,7 @@ defmodule BarquinhosWeb.GameLive do
 
   defp game_status(socket, status), do: assign(socket, game_status: status)
 
-  defp game_status(%{assigns: %{player: player, ships: ships}} = socket)
+  defp game_status(%{assigns: %{player: player, board: %{ships: ships}}} = socket)
        when length(ships) == 5 do
     Presence.update(self(), "battleship", player.id, %{player | ready: true})
     assign(socket, game_status: :ready)
@@ -165,7 +149,7 @@ defmodule BarquinhosWeb.GameLive do
   def handle_event("add_ship", %{"x" => x, "y" => y}, socket) do
     {:noreply,
      socket
-     |> ships({String.to_integer(x), String.to_integer(y)})
+     |> add_ship(x, y)
      |> to_points()
      |> ship_type(nil)
      |> game_status()}
@@ -179,8 +163,7 @@ defmodule BarquinhosWeb.GameLive do
         "y" => y
       })
 
-      {:noreply,
-       assign(socket, shots: [{String.to_integer(x), String.to_integer(y)} | socket.assigns.shots])}
+      {:noreply, assign(socket, board: Board.attack(socket.assigns.board, x, y))}
     else
       {:noreply, socket}
     end
@@ -242,12 +225,7 @@ defmodule BarquinhosWeb.GameLive do
     if player.id != socket.assigns.player.id do
       IO.puts("ship_hit received in broadcast")
 
-      {:noreply,
-       assign(socket,
-         opponent_hits: [
-           {String.to_integer(x), String.to_integer(y)} | socket.assigns.opponent_hits
-         ]
-       )}
+      {:noreply, assign(socket, board: Board.add_opponent_hit(socket.assigns.board, x, y))}
     else
       {:noreply, socket}
     end
