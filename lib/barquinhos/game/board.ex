@@ -1,8 +1,8 @@
 defmodule Barquinhos.Game.Board do
-  alias Barquinhos.Game.Ship
+  alias Barquinhos.Game.{Ship,Player}
 
   # ship-hit, miss, ship-sunk, gameover, ready
-  defstruct ships: [], shots: [], opponent_hits: [], status: :ready
+  defstruct ships: [], shots: [], opponent_hits: [], status: :ready, last_shooter: %Player{}
   #shots_sent,  successful_shots
   #direct hit
 
@@ -72,4 +72,13 @@ defmodule Barquinhos.Game.Board do
       true -> %{board | status: sunk_ship(board)}
     end
   end
+
+  def set_last_shooter(board, player) do
+    %{board | last_shooter: player}
+  end
+
+  def is_last_shooter(board, player) do
+    board.last_shooter.id == player.id
+  end
+
 end
