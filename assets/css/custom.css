@@ -92,10 +92,36 @@ button.play:hover {
     background-color:red;
     color: rgb(7, 0, 0);
     border: none;
+    background-image: url(/images/wave.svg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .hit {
     background-color: yellow;
-    color: rgb(0,128,0);
+    /* color: rgb(0,128,0); */
+    color: transparent;
     border: none;
+}
+
+.bomb-1 {
+    background-image: url(/images/bomb1.svg);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.bomb-2 {
+    background-image: url(/images/bomb2.svg);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.bomb-3 {
+    background-image: url(/images/bomb3.svg);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
