@@ -155,6 +155,10 @@ defmodule BarquinhosWeb.GameLive do
      |> game_status()}
   end
 
+  def handle_event("add_shot", _params, %{assigns: %{player: %{id: id}, board: %{last_shooter: %{id: id}}}} = socket) do
+    IO.puts("add_shot param match magic")
+    {:noreply, socket}
+  end
   def handle_event("add_shot", %{"x" => x, "y" => y}, socket) do
     if all_players_ready?(socket.assigns.players) do
       BarquinhosWeb.Endpoint.broadcast("battleship", "shot_fired", %{
@@ -205,11 +209,12 @@ defmodule BarquinhosWeb.GameLive do
        assign(socket,
          shots_received: [
            {String.to_integer(x), String.to_integer(y)} | socket.assigns.shots_received
-         ]
+         ],
+         board: Board.set_last_shooter(socket.assigns.board, player)
        )
        |> sunk()}
     else
-      {:noreply, socket}
+      {:noreply, assign(socket, board: Board.set_last_shooter(socket.assigns.board, player))}
     end
   end
 
