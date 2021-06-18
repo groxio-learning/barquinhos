@@ -281,7 +281,7 @@ defmodule BarquinhosWeb.GameLive do
 
   defp shot_class(shots_received, points, {x, y}) do
     cond do
-      {x, y} in shots_received && "#{x}#{y}" in points -> "hit"
+      {x, y} in shots_received && "#{x}#{y}" in points -> "hit bomb-#{Enum.random(1..3)}"
       {x, y} in shots_received -> "shot"
       true -> ""
     end
@@ -289,10 +289,12 @@ defmodule BarquinhosWeb.GameLive do
 
   defp opponent_shot_class(opponent_hits, shots, {x, y}) do
     cond do
-      {x, y} in opponent_hits -> "hit"
+      {x, y} in opponent_hits -> "hit bomb-#{random_bomb()}"
       # opponent shots fired from us
       {x, y} in shots -> "shot"
       true -> ""
     end
   end
+
+  defp random_bomb(), do: Enum.random(1..3)
 end
